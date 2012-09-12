@@ -22,9 +22,8 @@
         "php": ">=5.3.0",
         "behat/behat": ">=2.4@stable",
         "behat/mink-extension": "*",
-        "behat/mink-goutte-driver": "*",
-        "behat/mink-selenium-driver": "*",
-        "behat/mink-selenium2-driver": "*"
+        "symfony/config": ">=2.0.0,<2.2.0",
+        "symfony/dependency-injection": ">=2.0.0,<2.2.0"
     },
     "autoload": {
         "psr-0": {
