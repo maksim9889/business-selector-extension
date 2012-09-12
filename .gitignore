@@ -1,0 +1,14 @@
+*~
+.DS_Store
+*.swp
+phing/*/configFileOutput/
+cloudController/systemTests/testReports/
+cloudController/tests/testReports/
+nbproject/
+build/logs/
+coverage/
+vendor/
+bin/
+composer.phar
+composer.lock
+nbproject/
