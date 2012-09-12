@@ -1,6 +1,6 @@
 # Business Selectors For Behat
 
-Build Status:  ![Travis CI](https://secure.travis-ci.org/orangedigital/business-selector-extension.png) 
+Build Status: [![Build Status](https://secure.travis-ci.org/orangedigital/business-selector-extension.png)](http://travis-ci.org/orangedigital/business-selector-extension)
 
 ## Introduction 
 
