@@ -1,5 +1,7 @@
 # Business Selectors For Behat
 
+Build Status:  ![Travis CI](https://secure.travis-ci.org/orangedigital/business-selector-extension.png) 
+
 ## Introduction 
 
 The Mink Extension for Behat is an excellent way to quickly get up and running 
