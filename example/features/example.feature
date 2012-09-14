@@ -35,6 +35,7 @@ And I should see "Widget Area Two" component
 And I should not see "Widget Area Three" component
 And "Widget" should contain "Widget Area Two"
 And "Widget" should not contain "Widget Area Three"
+And I should not see "Hidden Div" component
 
 
 

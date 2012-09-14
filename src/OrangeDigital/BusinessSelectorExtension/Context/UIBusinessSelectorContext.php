@@ -238,7 +238,10 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
             $result = $this->findElementWithBusinessSelector($elementName);
 
             if (!is_null($result)) {
-                throw new \RuntimeException("Component $elementName found");
+                
+                if($result->isVisible()) {
+                    throw new \RuntimeException("Component $elementName found");
+                }
             }
         } catch (ElementNotFoundException $e) {
             return;

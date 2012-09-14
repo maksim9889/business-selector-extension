@@ -731,12 +731,16 @@ class UIBusinessSelectorContextTest extends \PHPUnit_Framework_TestCase {
         $this->context->iShouldNotSeeComponent('Container');         
     }
 
-    public function testIShouldNotSeeComponentShouldThrowExceptionIfComponentFound() {
+    public function testIShouldNotSeeComponentShouldThrowExceptionIfComponentFoundAndVisible() {
         
         $this->setSessionExpectation(true);
 
         $cbox = $this->getMock('Behat\Mink\Element\NodeElement', array(), array(), '', false, false);
-
+        
+        $cbox->expects($this->once())
+             ->method('isVisible')
+             ->will($this->returnValue(true));
+        
         $this->setFindExpectationWithReturnElement('div.main', $cbox);
         
         $this->setExpectedException('\RuntimeException');
@@ -744,6 +748,26 @@ class UIBusinessSelectorContextTest extends \PHPUnit_Framework_TestCase {
         $this->context->iShouldNotSeeComponent('Container');         
     }
 
+    public function testIShouldNotSeeComponentShouldNotThrowExceptionIfComponentFoundAndNotVisible() {
+        
+        $this->setSessionExpectation(true);
+
+        $cbox = $this->getMock('Behat\Mink\Element\NodeElement', array(), array(), '', false, false);
+        
+        $cbox->expects($this->once())
+             ->method('isVisible')
+             ->will($this->returnValue(false));
+        
+        $this->setFindExpectationWithReturnElement('div.main', $cbox);
+        
+        try {
+        $this->context->iShouldNotSeeComponent('Container');         
+        } catch (\RuntimeException $e) {
+            $this->fail("Runtime exception found when expecting no exception.");
+        }
+    }
+
+    
     public function testIShouldNotSeeComponentShouldThrowExceptionOnNonExistentSelector() {
         
         $this->setSessionExpectation(false);
