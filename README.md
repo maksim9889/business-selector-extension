@@ -88,6 +88,7 @@ default:
           urlFilePath: urls.yml
           selectorFilePath: selectors.yml
           assetPath: path
+          timeout: 30
           contexts:
             UIBusinessSelector: ~
         Behat\MinkExtension\Extension:
@@ -196,6 +197,10 @@ When I refocus on the primary page
 
 ````cucumber
 When I hover over "<PAGE ELEMENT>"
+````
+
+````cucumber
+When I wait for the "<PAGE ELEMENT>" component to [dis]appear
 ````
 
 ````cucumber

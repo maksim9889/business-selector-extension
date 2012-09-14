@@ -16,6 +16,13 @@ And the "terms" should not be checked
 And I check the "terms" checkbox
 And I uncheck the "adverts" checkbox
 And I attach "cat.jpeg" to "file upload input"
+And I should not see "Wait Test" component
+When I press the "Add" button
+And I wait for the "Wait Test" component to appear
+Then I should see "Wait Test" component
+And I press the "Remove" button
+And I wait for the "Wait Test" component to disappear
+Then I should not see "Wait Test" component
 
 
 @javascript
@@ -36,6 +43,5 @@ And I should not see "Widget Area Three" component
 And "Widget" should contain "Widget Area Two"
 And "Widget" should not contain "Widget Area Three"
 And I should not see "Hidden Div" component
-
 
 

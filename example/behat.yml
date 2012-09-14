@@ -9,6 +9,7 @@ default:
           urlFilePath: urls.yml
           selectorFilePath: selectors.yml
           assetPath: assets/
+          timeout: 30
           contexts:
             UIBusinessSelector: ~
         Behat\MinkExtension\Extension:
@@ -17,4 +18,3 @@ default:
             goutte: ~
             selenium: ~
             selenium2: ~
-
