@@ -17,3 +17,7 @@ Test Box: "testframe"
 IDIndex0: 0
 IDIndex1: 1
 Hidden Div: "#secret-container"
+Wait Test: "#wait_test"
+Add: "#add"
+Remove: "#remove"
+

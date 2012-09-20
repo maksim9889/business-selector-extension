@@ -249,6 +249,34 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
     }
 
     /**
+     * @When /^I wait for the "([^"]*)" component to (dis|)appear$/
+     */
+    public function waitForComponent($elementName, $visibility = null)
+    {
+        $selector = $this->getSelectorFromString($elementName);
+
+        $session = $this->getSession();
+        $scopeElement = $session->getPage();
+
+        $start = 1000 * microtime(true);
+        $end = $start + ((int)$this->getTimeout() * 1000);
+
+        if (empty($visibility)) {
+            while (1000 * microtime(true) < $end && !$scopeElement->find('css', $selector)) {
+                sleep(0.1);
+            }
+        } else {
+            while (1000 * microtime(true) < $end && $scopeElement->find('css', $selector)) {
+                sleep(0.1);
+            }
+        }
+
+        if ((1000 * microtime(true)) >= $end) {
+            throw new \RuntimeException("Component ".$elementName." did not ".$visibility."appear on the page");
+        }
+    }
+
+    /**
      * @Then /^the "([^"]*)" should contain "([^"]*)"$/
      */
     public function theShouldContain($elementName, $text) {
@@ -430,6 +458,22 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
         }
 
         return $url;
+    }
+
+    /**
+     * Returns a timeout value used for element conditionals either from the
+     * config or if not set, provides a default.
+     *
+     * @return string
+     */
+    protected function getTimeout() {
+
+        if (isset($this->parameters['timeout'])) {
+            return $this->parameters['timeout'];
+        } else {
+            return "30";
+        }
+
     }
 
     /**
