@@ -186,10 +186,12 @@ When I uncheck the "<CHECKBOX>" checkbox
 ````
 
 ````cucumber
-When I focus on the "<ID OF IFRAME>" iframe
+When I focus on the "<IFRAME (RELATES TO ID OR INDEX)>" iframe
 ````
 **Note: The step above is the only step where the selector MUST be an ID. 
-This is due to an underlying driver implementation detail**
+If the iframe does not have an ID, you can provide the index of the iframe, where
+0 relates to the first iframe, 1 the second etc. An example of this can be found
+in example/features/example.feature**
 
 ````cucumber
 When I refocus on the primary page
