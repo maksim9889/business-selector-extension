@@ -23,11 +23,25 @@ Scenario: As a tester I want to assert the presence of elements on the page usin
 Given I go to the page "Element Page"
 When I hover over "Widget"
 And I focus on the "Test Box" iframe
-Then I should see "FRAME CONTENT"
+Then I should see "FRAME CONTENT ZERO"
 And I should not see "Area One Text" 
 When I refocus on the primary page
 Then I should see "Area One Text"
 Then I should not see "FRAME CONTENT"
+#When I refocus on the primary page
+
+# Testing Iframe ID / Index Selection 
+And I focus on the "IDIndex0" iframe
+Then I should see "FRAME CONTENT ZERO"
+And I should not see "Area One Text" 
+When I refocus on the primary page
+
+# Testing Iframe ID / Index Selection 
+And I focus on the "IDIndex1" iframe
+Then I should see "FRAME CONTENT ONE"
+And I should not see "Area One Text" 
+When I refocus on the primary page
+
 Then the "Page" should contain "Area One Text"
 And the "Widget" should contain "Area One Text"
 And the "Widget Area Two" should contain "Area Two Nested Text"
