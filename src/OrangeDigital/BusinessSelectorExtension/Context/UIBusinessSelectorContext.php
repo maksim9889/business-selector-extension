@@ -64,6 +64,7 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
     /**
      * @When /^I follow the link "([^"]*)"$/
      * @When /^I press the "([^"]*)" button$/
+     * @Given /^I click the "([^"]*)"$/
      */
     public function iFollowTheLink($elementName) {
 

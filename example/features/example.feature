@@ -23,7 +23,7 @@ Then I should see "Wait Test" component
 And I press the "Remove" button
 And I wait for the "Wait Test" component to disappear
 Then I should not see "Wait Test" component
-
+And I click the "Add"
 
 @javascript
 Scenario: As a tester I want to assert the presence of elements on the page using business terms

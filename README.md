@@ -158,6 +158,10 @@ When I follow the link "<LINK>"
 ````
 
 ````cucumber
+When I click the "<CLICKABLE ELEMENT>"
+````
+
+````cucumber
 When I press the "<BUTTON>" button
 ````
 
