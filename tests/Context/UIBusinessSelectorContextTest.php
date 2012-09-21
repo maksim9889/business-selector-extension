@@ -1012,6 +1012,53 @@ class UIBusinessSelectorContextTest extends \PHPUnit_Framework_TestCase {
         $this->context->iRefocusOnThePrimaryPage('Frame');           
     }
     
+    public function testWaitForComponentShouldCorrectlySubstituteSelector() {
+        
+        $this->setSessionExpectation(true);
+
+        $input = $this->getMock('Behat\Mink\Element\NodeElement', array(), array(), '', false, false);
+
+        $this->setFindExpectationWithReturnElement('input[name=picture]', $input);
+        
+        $this->context->waitForComponent('User Picture');     
+    }
+    
+    public function testWaitForComponentShouldThrowExceptionOnNonExistentSelector() {
+        
+        $this->setSessionExpectation(false);
+
+        $this->setExpectedException('\RuntimeException');
+
+        $this->context->waitForComponent('Stuffed Dog');      
+    }
+    
+    public function testWaitForComponentShouldThrowExceptionIfElementDoesNotAppearWhenExpected() {
+        
+        $this->setSessionExpectation(true);
+
+        $this->setFindExpectationWithNoElementFoundException('input[name=picture]');
+        
+        $this->setExpectedException('\RuntimeException');
+        
+        $this->context->waitForComponent('User Picture');  
+    }
+
+    
+    public function testWaitForComponentShouldThrowExceptionIfElementDoesNotDisappearWhenExpected() 
+    { 
+        $this->setSessionExpectation(true);
+
+        $input = $this->getMock('Behat\Mink\Element\NodeElement', array(), array(), '', false, false);
+
+        $this->setFindExpectationWithReturnElement('input[name=picture]', $input);
+        
+        $this->setExpectedException('\RuntimeException');
+        
+        $this->context->waitForComponent('User Picture', 'dis'); 
+    }
+    
+    
+    
             
 
 }

@@ -256,22 +256,18 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
         $selector = $this->getSelectorFromString($elementName);
 
         $session = $this->getSession();
-        $scopeElement = $session->getPage();
 
-        $start = 1000 * microtime(true);
-        $end = $start + ((int)$this->getTimeout() * 1000);
-
-        if (empty($visibility)) {
-            while (1000 * microtime(true) < $end && !$scopeElement->find('css', $selector)) {
-                sleep(0.1);
-            }
-        } else {
-            while (1000 * microtime(true) < $end && $scopeElement->find('css', $selector)) {
-                sleep(0.1);
-            }
-        }
-
-        if ((1000 * microtime(true)) >= $end) {
+        $session->wait(5000,
+            "$('$selector').is(':visible');"
+        );
+        
+        $page = $session->getPage();
+        
+        $result = $page->find('css', $selector);
+        
+        if(empty($visibility) && is_null($result)) {
+            throw new \RuntimeException("Component ".$elementName." did not ".$visibility."appear on the page");
+        } elseif(!empty($visibility) && $result) {
             throw new \RuntimeException("Component ".$elementName." did not ".$visibility."appear on the page");
         }
     }
