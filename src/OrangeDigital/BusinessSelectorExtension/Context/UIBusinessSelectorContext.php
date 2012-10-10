@@ -259,7 +259,7 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
         $session = $this->getSession();
 
         $session->wait(5000,
-            "$('$selector').is(':visible');"
+            "window && window.jQuery && jQuery('$selector').is(':visible');"
         );
         
         $page = $session->getPage();
