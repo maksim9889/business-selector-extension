@@ -17,13 +17,22 @@ And I check the "terms" checkbox
 And I uncheck the "adverts" checkbox
 And I attach "cat.jpeg" to "file upload input"
 And I should not see "Wait Test" component
+
 When I press the "Add" button
 And I wait for the "Wait Test" component to appear
 Then I should see "Wait Test" component
-And I press the "Remove" button
+
+When I press the "Hide" button
 And I wait for the "Wait Test" component to disappear
 Then I should not see "Wait Test" component
-And I click the "Add"
+
+When I press the "Unhide" button
+And I wait for the "Wait Test" component to appear
+Then I should see "Wait Test" component
+
+When I press the "Remove" button
+And I wait for the "Wait Test" component to disappear
+Then I should not see "Wait Test" component
 
 @javascript
 Scenario: As a tester I want to assert the presence of elements on the page using business terms
