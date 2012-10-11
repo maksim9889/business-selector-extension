@@ -252,27 +252,48 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
     /**
      * @When /^I wait for the "([^"]*)" component to (dis|)appear$/
      */
-    public function waitForComponent($elementName, $visibility = null)
+    public function waitForComponent($elementName, $expVisibility = null)
     {
+        // Visibility is null when the 'dis' section of the string is not present
+        $expVisibility = (empty($expVisibility)) ? 'visible' : 'hidden'; 
+        
         $selector = $this->getSelectorFromString($elementName);
 
         $session = $this->getSession();
         $timeout = $this->getTimeout();
-
-        $condition = "window && window.jQuery && jQuery('$selector').is(':" .(
-                $visibility
-                ? 'hidden'
-                : 'visible'
-            ). "');";
-
-        $start = 1000 * microtime(true);
-        $end = $start + ((int)$timeout);
         
-        $session->wait($timeout, $condition);
-
-        if ((1000 * microtime(true)) >= $end) {
-            throw new \RuntimeException("Component ".$elementName." did not ".$visibility."appear on the page");
+        if($expVisibility == 'hidden') {
+            // If we are expecting the element to disappear it could either have its visibility changed or removed from the DOM
+            $condition = "window && window.jQuery && (jQuery('$selector').is(':" . $expVisibility . "') || jQuery.find('$selector').length == 0);";
+        } else {
+            $condition = "window && window.jQuery && jQuery('$selector').is(':" . $expVisibility . "');";
         }
+        
+        // Will block for $timeout or until the the condition return true
+        // Always returns true never throws an exception.
+        $session->wait($timeout, $condition);
+        
+        // Search for element. Element if found, null if element not found.
+        $element = $session->getPage()->find('css', $selector);
+        
+        if (!is_null($element)) {
+            
+            // Element can be on the page but may not be visible
+            $visibility = $element->isVisible();
+            
+            if($expVisibility == 'hidden' && $visibility) {
+                throw new \RuntimeException("Component " . $elementName . " is visible");
+            } elseif ($expVisibility == 'visible' && !$visibility) {
+                throw new \RuntimeException("Component " . $elementName . " is on page but not visible");
+            }
+            
+        } else {
+            // No Element on the page
+            if($expVisibility == 'visible') {
+                throw new \RuntimeException("Component " . $elementName . " does not appear on the page");
+            }
+        }
+        
     }
 
     /**

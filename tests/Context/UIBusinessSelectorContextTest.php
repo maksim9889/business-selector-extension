@@ -69,6 +69,21 @@ class UIBusinessSelectorContextTest extends \PHPUnit_Framework_TestCase {
                 ->method("getPage")
                 ->will($this->returnValue($page));
     }
+    
+    protected function setFindExpectationWithNoReturnElement($selector) {
+        $page = $this->getMock('Behat\Mink\Element\Element', array(), array(), '', false, false);
+
+        $page
+                ->expects($this->once())
+                ->method('find')
+                ->with('css', $selector)
+                ->will($this->returnValue(null));
+
+        $this->session
+                ->expects($this->once())
+                ->method("getPage")
+                ->will($this->returnValue($page));
+    }
 
     protected function setFindExpectationWithNoElementFoundException($selector) {
         $page = $this->getMock('Behat\Mink\Element\Element', array(), array(), '', false, false);
@@ -1014,25 +1029,46 @@ class UIBusinessSelectorContextTest extends \PHPUnit_Framework_TestCase {
     
     public function testWaitForComponentShouldCorrectlySubstituteSelector() {
         
+        // Expected to appear
+        // Does appear && is visible 
+        
         $this->setSessionExpectation(true);
 
         $input = $this->getMock('Behat\Mink\Element\NodeElement', array(), array(), '', false, false);
 
+        $input->expects($this->once())
+                ->method('isVisible')
+                ->will($this->returnValue(true));
+        
         $this->setFindExpectationWithReturnElement('input[name=picture]', $input);
         
         $this->context->waitForComponent('User Picture');     
     }
     
-    public function testWaitForComponentShouldThrowExceptionOnNonExistentSelector() {
+    public function testWaitForComponentShouldThrowExceptionIfElementAppearsWhenExpectedButIsNotVisible() {
         
-        $this->setSessionExpectation(false);
+        // Expected to appear 
+        // Present on page but not visible
+        
+        $this->setSessionExpectation(true);
 
+        $input = $this->getMock('Behat\Mink\Element\NodeElement', array(), array(), '', false, false);
+
+        $input->expects($this->once())
+                ->method('isVisible')
+                ->will($this->returnValue(false));
+        
+        $this->setFindExpectationWithReturnElement('input[name=picture]', $input);
+        
         $this->setExpectedException('\RuntimeException');
-
-        $this->context->waitForComponent('Stuffed Dog');      
+        
+        $this->context->waitForComponent('User Picture');  
     }
     
-    public function testWaitForComponentShouldThrowExceptionIfElementDoesNotAppearWhenExpected() {
+    public function testWaitForComponentShouldThrowExceptionIfElementDoesNotAppearOnPageWhenExpected() {
+        
+        // Expected to appeaer 
+        // is not on page
         
         $this->setSessionExpectation(true);
 
@@ -1042,19 +1078,65 @@ class UIBusinessSelectorContextTest extends \PHPUnit_Framework_TestCase {
         
         $this->context->waitForComponent('User Picture');  
     }
-
     
     public function testWaitForComponentShouldThrowExceptionIfElementDoesNotDisappearWhenExpected() 
     { 
+        // Expected to disappear
+        // Still present and visible
+        
         $this->setSessionExpectation(true);
 
         $input = $this->getMock('Behat\Mink\Element\NodeElement', array(), array(), '', false, false);
-
+        
+        $input->expects($this->once())
+                ->method('isVisible')
+                ->will($this->returnValue(true));  
+        
         $this->setFindExpectationWithReturnElement('input[name=picture]', $input);
         
         $this->setExpectedException('\RuntimeException');
         
         $this->context->waitForComponent('User Picture', 'dis'); 
+    }
+    
+    public function testWaitForComponentShouldNotThrowExceptionIfElementDisappearsWhenExpectedOffPage() 
+    { 
+        // Expected to disappear
+        
+        $this->setSessionExpectation(true);
+
+        $input = $this->getMock('Behat\Mink\Element\NodeElement', array(), array(), '', false, false);
+
+        $this->setFindExpectationWithNoReturnElement('input[name=picture]');
+        
+        $this->context->waitForComponent('User Picture', 'dis'); 
+    }
+    
+    public function testWaitForComponentShouldNotThrowExceptionIfElementDisappearsWhenExpectedCecomesInvisible() 
+    { 
+        // Expected to disappear
+        // present on page but invisible
+        
+        $this->setSessionExpectation(true);
+
+        $input = $this->getMock('Behat\Mink\Element\NodeElement', array(), array(), '', false, false);
+
+        $input->expects($this->once())
+                ->method('isVisible')
+                ->will($this->returnValue(false));      
+        
+        $this->setFindExpectationWithReturnElement('input[name=picture]', $input);
+        
+        $this->context->waitForComponent('User Picture', 'dis'); 
+    }
+    
+    public function testWaitForComponentShouldThrowExceptionOnNonExistentSelector() {
+        
+        $this->setSessionExpectation(false);
+
+        $this->setExpectedException('\RuntimeException');
+
+        $this->context->waitForComponent('Stuffed Dog');      
     }
     
     
