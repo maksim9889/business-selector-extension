@@ -257,18 +257,20 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
         $selector = $this->getSelectorFromString($elementName);
 
         $session = $this->getSession();
+        $timeout = $this->getTimeout();
 
-        $session->wait(5000,
-            "window && window.jQuery && jQuery('$selector').is(':visible');"
-        );
+        $condition = "window && window.jQuery && jQuery('$selector').is(':" .(
+                $visibility
+                ? 'hidden'
+                : 'visible'
+            ). "');";
+
+        $start = 1000 * microtime(true);
+        $end = $start + ((int)$timeout);
         
-        $page = $session->getPage();
-        
-        $result = $page->find('css', $selector);
-        
-        if(empty($visibility) && is_null($result)) {
-            throw new \RuntimeException("Component ".$elementName." did not ".$visibility."appear on the page");
-        } elseif(!empty($visibility) && $result) {
+        $session->wait($timeout, $condition);
+
+        if ((1000 * microtime(true)) >= $end) {
             throw new \RuntimeException("Component ".$elementName." did not ".$visibility."appear on the page");
         }
     }
@@ -466,9 +468,9 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
     protected function getTimeout() {
 
         if (isset($this->parameters['timeout'])) {
-            return $this->parameters['timeout'];
+            return $this->parameters['timeout'].'000';
         } else {
-            return "30";
+            return "30000";
         }
 
     }

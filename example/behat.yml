@@ -9,11 +9,11 @@ default:
           urlFilePath: urls.yml
           selectorFilePath: selectors.yml
           assetPath: assets/
-          timeout: 30
+          timeout: 10
           contexts:
             UIBusinessSelector: ~
         Behat\MinkExtension\Extension:
-            base_url: "http://local.dev"
+            base_url: "http://localhost"
             default_session: goutte
             goutte: ~
             selenium: ~
