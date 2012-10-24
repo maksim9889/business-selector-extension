@@ -138,7 +138,7 @@ Run **../bin/behat**
 ##Steps Provided By Business Selectors
 
 Bellow are a list of steps provided by the business selector extension. Values in 
-<BRACKETS> denote arbitrary business friendly names which should match CSS 
+\<BRACKETS\> denote arbitrary business friendly names which should match CSS 
 selectors in the relevant config file (specified in behat.yml by 'urlFilePath' 
 and 'selectorFilePath'). See the provided example implementation for details.   
 
