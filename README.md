@@ -59,12 +59,6 @@ The best way to install the contexts is by using composer.
 ````javascript
 {   
     "minimum-stability": "dev",
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/orangedigital/business-selector-extension"
-        }
-    ],
     "require": {
         "behat/behat": ">v2.4@stable",
         "orangedigital/business-selector-extension": "*"
