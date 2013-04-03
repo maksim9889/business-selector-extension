@@ -144,7 +144,7 @@ Given I go to the page "<PAGE NAME>"
 ````
 
 ````cucumber
-Given I attach "<FILE NAME> to <IMAGE INPUT>"$/
+Given I attach "<FILE NAME> to <IMAGE INPUT>"
 ````
 **Note: This requires the assetPath to be configured to a relative directory that contains your assets (e.g. assetPath: assets/). Filename must include the extension associated with the file (e.g. example.jpeg).**
 
