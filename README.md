@@ -143,6 +143,11 @@ parameter "urlFilePath"**
 Given I go to the page "<PAGE NAME>" 
 ````
 
+````cucumber
+Given I attach "<FILE NAME> to <IMAGE INPUT>"$/
+````
+** Note: This requires the assetPath to be configured to a relative directory that contains your assets (e.g. assetPath: assets/). Filename must include the extension associated with the file (e.g. example.jpeg).
+
 **All CSS Selectors below should be placed in the CSS selector file specified
 in behat.yml by the parameter "selectorFilePath"**
 
