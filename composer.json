@@ -8,13 +8,11 @@
     "authors": [
         {
             "name": "Ben Waine",
-            "email": "ben.waine@orange.com",
             "homepage": "http://ben-waine.co.uk",
             "role": "Developer"
         },
         {
             "name": "Phill Hicks",
-            "email": "phillip.hicks@orange.com",
             "role": "Developer"
         }       
     ],
