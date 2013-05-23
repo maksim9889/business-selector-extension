@@ -10,39 +10,40 @@ use OrangeDigital\BusinessSelectorExtension\Exception\ElementNotFoundException;
 /**
  * This is exposes a number of steps which allow the user to swap business terms
  * specified in a Gherkin file with CSS selectors specified in URL and Selector
- * files. 
- * 
- * @author Ben Waine <ben.waine@orange.com>
- * @author Phill Hicks <phillip.hicks@orange.com>  
+ * files.
+ *
+ * @author James Bodkin
+ * @author Ben Waine
+ * @author Phill Hicks
  */
 class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterface {
 
     /**
      * Context Parameters
-     * 
-     * @var array 
+     *
+     * @var array
      */
     protected $parameters;
 
     /**
      * Mink Instance
-     * 
+     *
      * @var Mink
      */
     protected $mink;
-    
+
     /**
      * Mink Parameters
-     * 
+     *
      * @var array
      */
     protected $minkParameters;
 
     /**
      * Initialises an instance of the UIBusinessSelectorContext
-     * 
+     *
      * @param array $parameters
-     * 
+     *
      * @return void
      */
     public function __construct($parameters) {
@@ -53,9 +54,7 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
      * @Given /^I go to the page "([^"]*)"$/
      */
     public function iGoToThePage($pageName) {
-
         $page = $this->getUrlFromString($pageName);
-
         $url = $this->getUrl($page);
 
         $this->getSession()->visit($url);
@@ -67,9 +66,7 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
      * @Given /^I click the "([^"]*)"$/
      */
     public function iFollowTheLink($elementName) {
-
         $element = $this->findElementWithBusinessSelector($elementName);
-
         $element->click();
     }
 
@@ -78,7 +75,6 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
      */
     public function iFillInTheFieldWith($elementName, $value) {
         $element = $this->findElementWithBusinessSelector($elementName);
-
         $element->setValue($value);
     }
 
@@ -96,7 +92,6 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
      */
     public function iAdditionallySelectFromTheSelector($value, $elementName) {
         $element = $this->findElementWithBusinessSelector($elementName);
-
         $element->selectOption($value, true);
     }
 
@@ -173,56 +168,46 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
     /**
      * @Given /^I attach "([^"]*)" to "([^"]*)"$/
      */
-    public function iAttachTo($file, $elementName)
-    {    
+    public function iAttachTo($file, $elementName) {
         $element = $this->findElementWithBusinessSelector($elementName);
-        
-        $path = $this->parameters['assetPath'] . $file;
 
+        $path = $this->parameters['assetPath'] . $file;
         $rPath = realpath($path);
-        
+
         if(!file_exists($rPath)) {
             throw new \RuntimeException("File: $rPath does not exist");
         }
-        
+
         $element->attachFile($rPath);
-         
+
     }
 
     /**
      * @When /^I hover over "([^"]*)"$/
      */
-    public function iHoverOver($elementName)
-    {
+    public function iHoverOver($elementName) {
         $element = $this->findElementWithBusinessSelector($elementName);
-        
         $element->mouseOver();
     }
 
     /**
      * @When /^I focus on the "([^"]*)" iframe$/
      */
-    public function iFocusOnTheIframe($elementName)
-    {
+    public function iFocusOnTheIframe($elementName) {
         $element = $this->getSelectorFromString($elementName);
-        
+
         $session = $this->getSession();
-        
         $session->switchToIFrame($element);
     }
 
     /**
      * @When /^I refocus on the primary page$/
      */
-    public function iRefocusOnThePrimaryPage()
-    {
+    public function iRefocusOnThePrimaryPage() {
         $session = $this->getSession();
-        
         $session->switchToIFrame();
     }
-    
 
-    
     /**
      * @Then /^I should see "([^"]*)" component$/
      */
@@ -234,12 +219,11 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
      * @Then /^I should not see "([^"]*)" component$/
      */
     public function iShouldNotSeeComponent($elementName) {
-
         try {
             $result = $this->findElementWithBusinessSelector($elementName);
 
             if (!is_null($result)) {
-                
+
                 if($result->isVisible()) {
                     throw new \RuntimeException("Component $elementName found");
                 }
@@ -252,48 +236,46 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
     /**
      * @When /^I wait for the "([^"]*)" component to (dis|)appear$/
      */
-    public function waitForComponent($elementName, $expVisibility = null)
-    {
+    public function waitForComponent($elementName, $expVisibility = null) {
         // Visibility is null when the 'dis' section of the string is not present
-        $expVisibility = (empty($expVisibility)) ? 'visible' : 'hidden'; 
-        
+        $expVisibility = (empty($expVisibility)) ? 'visible' : 'hidden';
+
         $selector = $this->getSelectorFromString($elementName);
 
         $session = $this->getSession();
         $timeout = $this->getTimeout();
-        
-        if($expVisibility == 'hidden') {
+
+        if ($expVisibility == 'hidden') {
             // If we are expecting the element to disappear it could either have its visibility changed or removed from the DOM
             $condition = "window && window.jQuery && (jQuery('$selector').is(':" . $expVisibility . "') || jQuery.find('$selector').length == 0);";
         } else {
             $condition = "window && window.jQuery && jQuery('$selector').is(':" . $expVisibility . "');";
         }
-        
+
         // Will block for $timeout or until the the condition return true
         // Always returns true never throws an exception.
         $session->wait($timeout, $condition);
-        
+
         // Search for element. Element if found, null if element not found.
         $element = $session->getPage()->find('css', $selector);
-        
+
         if (!is_null($element)) {
-            
             // Element can be on the page but may not be visible
             $visibility = $element->isVisible();
-            
-            if($expVisibility == 'hidden' && $visibility) {
+
+            if ($expVisibility == 'hidden' && $visibility) {
                 throw new \RuntimeException("Component " . $elementName . " is visible");
             } elseif ($expVisibility == 'visible' && !$visibility) {
                 throw new \RuntimeException("Component " . $elementName . " is on page but not visible");
             }
-            
+
         } else {
             // No Element on the page
             if($expVisibility == 'visible') {
                 throw new \RuntimeException("Component " . $elementName . " does not appear on the page");
             }
         }
-        
+
     }
 
     /**
@@ -326,7 +308,6 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
      * @Then /^"([^"]*)" should contain "([^"]*)"$/
      */
     public function shouldContain($elementNameOutter, $elementNameInner) {
-
         $scopeElement = $this->findElementWithBusinessSelector($elementNameOutter);
 
         $element = $this->findElementWithBusinessSelector($elementNameInner, $scopeElement);
@@ -336,7 +317,6 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
      * @Then /^"([^"]*)" should not contain "([^"]*)"$/
      */
     public function shouldNotContain($elementNameOutter, $elementNameInner) {
-
         $scopeElement = $this->findElementWithBusinessSelector($elementNameOutter);
 
         try {
@@ -353,11 +333,10 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
     /**
      * Checks in the selector yaml file for a selector which matches the 
      * supplied business friendly string. 
-     * 
+     *
      * @return string
      */
     public function getSelectorFromString($string) {
-
         $selectors = $this->getSelectorHash();
 
         if (!array_key_exists($string, $selectors)) {
@@ -370,11 +349,10 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
     /**
      * Checks in the URL yaml file for a URL which matches the supplied
      * bussiness friendly string.
-     * 
+     *
      * @return string 
      */
     public function getUrlFromString($string) {
-
         $urls = $this->getURLHash();
 
         if (!array_key_exists($string, $urls)) {
@@ -387,13 +365,12 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
     /**
      * Returns an array of businesTerm > Selectors.
      * Checks if they have been loaded and loads them if not.
-     * 
-     * @return array  
+     *
+     * @return array
      */
     protected function getSelectorHash() {
         if (!isset($this->selectors)) {
             // Load Selectors from file
-
             $path = $this->parameters['selectorFilePath'];
 
             if (!$path) {
@@ -409,14 +386,12 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
     /**
      * Returns an array of businesTerm > URLs.
      * Checks if they have been loaded and loads them if not.
-     * 
-     * @return array  
+     *
+     * @return array
      */
     protected function getURLHash() {
-
         if (!isset($this->urls)) {
             // Load Selectors from file
-
             $path = $this->parameters['urlFilePath'];
 
             if (!$path) {
@@ -431,9 +406,9 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
 
     /**
      * Loads yaml and returns the result
-     * 
+     *
      * @param string $path 
-     * 
+     *
      * @return array
      */
     protected function loadYaml($path) {
@@ -456,7 +431,7 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
 
     /**
      * Gets the current Mink session.
-     * 
+     *
      * @return \Behat\Mink\Session
      */
     protected function getSession() {
@@ -465,9 +440,9 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
 
     /**
      * Returns a fully qualified URL using the base URL passed to Mink.
-     * 
+     *
      * @param string $frag
-     * 
+     *
      * @return string 
      */
     protected function getUrl($frag = null) {
@@ -487,13 +462,11 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
      * @return string
      */
     protected function getTimeout() {
-
         if (isset($this->parameters['timeout'])) {
             return $this->parameters['timeout'].'000';
         } else {
             return "30000";
         }
-
     }
 
     /**
@@ -506,11 +479,10 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
      * @return NodeElement|null 
      */
     protected function findElementWithBusinessSelector($elementName, $scopeElement = null) {
-
         $selector = $this->getSelectorFromString($elementName);
-        
+
         if (is_null($scopeElement)) {
-            $session = $this->getSession();    
+            $session = $this->getSession();
             $scopeElement = $session->getPage();
         }
 
@@ -540,6 +512,5 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
     public function setMinkParameters(array $parameters) {
         $this->minkParameters = $parameters;
     }
-    
-}
 
+}
