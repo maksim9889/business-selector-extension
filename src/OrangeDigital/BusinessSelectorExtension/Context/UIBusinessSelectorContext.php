@@ -489,7 +489,7 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
         $result = $scopeElement->find('css', $selector);
 
         if (is_null($result)) {
-            throw new ElementNotFoundException("Element $elementName not found");
+            throw new ElementNotFoundException("Element $elementName using selector $selector not found");
         }
 
         return $result;
