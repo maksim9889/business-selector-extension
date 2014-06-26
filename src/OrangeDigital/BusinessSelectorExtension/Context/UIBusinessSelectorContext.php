@@ -131,6 +131,16 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
     }
 
     /**
+     * @Then /^I should see "([^"]*)" on the page$/
+     */
+    public function iShouldSeeOnThePage($arg1) {
+        $result = $this->findTextWithBusinessSelector($arg1);
+        if (!$result) {
+            throw new \RuntimeException("'$arg1' not found on the page");
+        }   
+    }
+    
+    /**
      * @Then /^the "([^"]*)" form field should not contain "([^"]*)"$/
      */
     public function theFormFieldShouldNotContain($elementName, $value) {
@@ -490,6 +500,26 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
 
         if (is_null($result)) {
             throw new ElementNotFoundException("Element $elementName using selector $selector not found");
+        }
+
+        return $result;
+    }
+    
+    /**
+     * Looks for text on the page. Great for Translation based text search.
+     *
+     * @param string $text
+     *
+     * @return NodeElement|null
+     */
+    protected function findTextWithBusinessSelector($textToFind) {
+        $text = $this->getSelectorFromString($textToFind);
+
+        $session = $this->getSession()->getPage();
+        $result = $session->hasContent($text);
+
+        if (is_null($result)) {
+            throw new ElementNotFoundException("Text $textToFind using text $text not found");
         }
 
         return $result;
