@@ -62,7 +62,6 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
 
     /**
      * @When /^I follow the link "([^"]*)"$/
-     * @When /^I press the "([^"]*)" button$/
      * @Given /^I click the "([^"]*)"$/
      */
     public function iFollowTheLink($elementName) {
@@ -137,9 +136,9 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
         $result = $this->findTextWithBusinessSelector($arg1);
         if (!$result) {
             throw new \RuntimeException("'$arg1' not found on the page");
-        }   
+        }
     }
-    
+
     /**
      * @Then /^the "([^"]*)" form field should not contain "([^"]*)"$/
      */
@@ -341,8 +340,8 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
     }
 
     /**
-     * Checks in the selector yaml file for a selector which matches the 
-     * supplied business friendly string. 
+     * Checks in the selector yaml file for a selector which matches the
+     * supplied business friendly string.
      *
      * @return string
      */
@@ -360,7 +359,7 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
      * Checks in the URL yaml file for a URL which matches the supplied
      * bussiness friendly string.
      *
-     * @return string 
+     * @return string
      */
     public function getUrlFromString($string) {
         $urls = $this->getURLHash();
@@ -417,7 +416,7 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
     /**
      * Loads yaml and returns the result
      *
-     * @param string $path 
+     * @param string $path
      *
      * @return array
      */
@@ -453,7 +452,7 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
      *
      * @param string $frag
      *
-     * @return string 
+     * @return string
      */
     protected function getUrl($frag = null) {
         $url = $this->minkParameters['base_url'];
@@ -481,12 +480,12 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
 
     /**
      * Finds an element from the current page using the supplied business
-     * selector. 
-     * 
+     * selector.
+     *
      * @param string $elementName
      * @param NodeElement $scopeElement If passed search is conducted within the supplied element.
-     * 
-     * @return NodeElement|null 
+     *
+     * @return NodeElement|null
      */
     protected function findElementWithBusinessSelector($elementName, $scopeElement = null) {
         $selector = $this->getSelectorFromString($elementName);
@@ -504,7 +503,7 @@ class UIBusinessSelectorContext extends BehatContext implements MinkAwareInterfa
 
         return $result;
     }
-    
+
     /**
      * Looks for text on the page. Great for Translation based text search.
      *
